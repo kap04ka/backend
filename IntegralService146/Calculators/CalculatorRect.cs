@@ -4,6 +4,7 @@
     {
         public Tuple<double, List<double>, List<double>> Calculate(double down, double up, int numIntaration, Func<double, double> subIntegral)
         {
+            if (numIntaration <= 0) throw new ArgumentException();
             double sum = 0;
             double h = (up - down) / numIntaration;
 

@@ -41,6 +41,8 @@ namespace IntegralService146
 
             app.MapControllers();
 
+           
+
             app.Run();
         }
     }
