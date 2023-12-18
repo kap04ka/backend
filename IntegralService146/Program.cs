@@ -1,6 +1,6 @@
+using IntegralService146.Models;
 using IntegralService146.Services;
-using MathNet.Numerics;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
 
 namespace IntegralService146
 {
@@ -20,10 +20,17 @@ namespace IntegralService146
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-
             builder.Services.AddTransient<ICalculatorService, CalculatorService>();
 
+            builder.Services.AddDbContext<QuestionContext>(options =>
+            options.UseSqlServer(builder.Configuration.GetConnectionString("DevConnection")));
+
             var app = builder.Build();
+
+            app.UseCors(builder => builder
+                  .AllowAnyOrigin()
+                  .AllowAnyMethod()
+                  .AllowAnyHeader());
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -31,17 +38,11 @@ namespace IntegralService146
                 app.UseSwagger();
                 app.UseSwaggerUI();
 
-                app.UseCors(builder => builder
-                   .AllowAnyOrigin()
-                   .AllowAnyMethod()
-                   .AllowAnyHeader());
             }
 
             app.UseAuthorization();
 
             app.MapControllers();
-
-           
 
             app.Run();
         }
