@@ -19,7 +19,7 @@ namespace IntegralService146.Controllers
         }
 
         // Post: api/question
-        [HttpPost]
+        [HttpGet]
         public async Task<ActionResult<Question>> GetQuestions(int questionCount)
         {
             var randomNquestions = await (_context.Questions
