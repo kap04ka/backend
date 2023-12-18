@@ -22,8 +22,14 @@ namespace IntegralService146
 
             builder.Services.AddTransient<ICalculatorService, CalculatorService>();
 
+            var server = Environment.GetEnvironmentVariable("DB_HOST") ?? "localhost";
+            var port = Environment.GetEnvironmentVariable("DB_PORT") ?? "1433";
+            var dbName = Environment.GetEnvironmentVariable("DB_NAME") ?? "QuestionsDB";
+            var dbUser = Environment.GetEnvironmentVariable("DB_USERNAME") ?? "SA";
+            var dbPassword = Environment.GetEnvironmentVariable("DB_SA_PASSWORD") ?? "h25Sa1p35Ow";
+
             builder.Services.AddDbContext<QuestionContext>(options =>
-            options.UseSqlServer(builder.Configuration.GetConnectionString("DevConnection")));
+            options.UseSqlServer($"Server={server},{port};Initial Catalog={dbName};User ID ={dbUser};Password={dbPassword};TrustServerCertificate=True;MultipleActiveResultSets=True;"));
 
             var app = builder.Build();
 
@@ -39,6 +45,8 @@ namespace IntegralService146
                 app.UseSwaggerUI();
 
             }
+
+            PrepDB.PrepQuestion(app);
 
             app.UseAuthorization();
 

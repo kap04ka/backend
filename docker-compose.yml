@@ -1,0 +1,42 @@
+version: '3.4'
+
+networks:
+  apiapp:
+
+services:
+  database:
+    container_name: dbAPi
+    image: mcr.microsoft.com/mssql/server:latest
+    ports:
+      - 1433:1433
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "h25Sa1p35Ow"
+    networks:
+      - apiapp
+  integralservice146:
+    container_name: api
+    image: ${DOCKER_REGISTRY-}integralservice146
+    build:
+      context: .
+      dockerfile: IntegralService146/Dockerfile
+    ports:
+      - 5020:80
+    depends_on:
+      - database
+    environment:
+      DB_HOST: "database"
+      DB_NAME: "QuestionDB"
+      DB_SA_PASSWORD: "h25Sa1p35Ow"
+    networks:
+      - apiapp
+  front:
+    image: kap04ka/front:latest
+    ports:
+      - "3000:3000"
+    depends_on:
+      - integralservice146
+    environment:
+      REACT_APP_API_URL: "http://localhost:5020/"
+    networks:
+      - apiapp

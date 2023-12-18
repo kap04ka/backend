@@ -1,0 +1,139 @@
+name: dockercompose11994077740785788543
+services:
+  database:
+    container_name: dbAPi
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: h25Sa1p35Ow
+    image: mcr.microsoft.com/mssql/server:latest
+    networks:
+      apiapp: null
+    ports:
+      - mode: ingress
+        target: 1433
+        published: "1433"
+        protocol: tcp
+  front:
+    depends_on:
+      integralservice146:
+        condition: service_started
+        required: true
+    environment:
+      REACT_APP_API_URL: http://localhost:5020/
+    image: kap04ka/front:latest
+    networks:
+      apiapp: null
+    ports:
+      - mode: ingress
+        target: 3000
+        published: "3000"
+        protocol: tcp
+  integralservice146:
+    build:
+      context: C:\Users\Kapa\Desktop\Научная графика для МВС 1-46М_2\Лекции\Лекция 6\IntegralService146
+      dockerfile: IntegralService146/Dockerfile
+      labels:
+        com.microsoft.created-by: visual-studio
+        com.microsoft.visual-studio.project-name: IntegralService146
+      target: base
+    container_name: api
+    depends_on:
+      database:
+        condition: service_started
+        required: true
+    entrypoint:
+      - tail
+      - -f
+      - /dev/null
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_LOGGING__CONSOLE__DISABLECOLORS: "true"
+      DB_HOST: database
+      DB_NAME: QuestionDB
+      DB_SA_PASSWORD: h25Sa1p35Ow
+      DOTNET_USE_POLLING_FILE_WATCHER: "1"
+      NUGET_FALLBACK_PACKAGES: ""
+    image: integralservice146:dev
+    labels:
+      com.microsoft.visualstudio.debuggee.arguments: ' --additionalProbingPath /.nuget/packages  "/app/bin/Debug/net6.0/IntegralService146.dll"'
+      com.microsoft.visualstudio.debuggee.killprogram: /bin/sh -c "if PID=$$(pidof dotnet); then kill $$PID; fi"
+      com.microsoft.visualstudio.debuggee.program: dotnet
+      com.microsoft.visualstudio.debuggee.workingdirectory: /app
+    networks:
+      apiapp: null
+    ports:
+      - mode: ingress
+        target: 80
+        protocol: tcp
+      - mode: ingress
+        target: 80
+        published: "5020"
+        protocol: tcp
+    tty: true
+    volumes:
+      - type: bind
+        source: C:\Users\Kapa\Desktop\Научная графика для МВС 1-46М_2\Лекции\Лекция 6\IntegralService146\IntegralService146
+        target: /app
+        bind:
+          create_host_path: true
+      - type: bind
+        source: C:\Users\Kapa\Desktop\Научная графика для МВС 1-46М_2\Лекции\Лекция 6\IntegralService146
+        target: /src
+        bind:
+          create_host_path: true
+      - type: bind
+        source: C:\Users\Kapa\vsdbg\vs2017u5
+        target: /remote_debugger
+        bind:
+          create_host_path: true
+      - type: bind
+        source: C:\Users\Kapa\.nuget\packages\
+        target: /.nuget/packages
+        read_only: true
+        bind:
+          create_host_path: true
+      - type: bind
+        source: C:\Users\Kapa\AppData\Roaming/ASP.NET/Https
+        target: /root/.aspnet/https
+        read_only: true
+        bind:
+          create_host_path: true
+      - type: bind
+        source: C:\Users\Kapa\AppData\Roaming/ASP.NET/Https
+        target: /home/app/.aspnet/https
+        read_only: true
+        bind:
+          create_host_path: true
+      - type: bind
+        source: C:\Users\Kapa\AppData\Roaming/Microsoft/UserSecrets
+        target: /root/.microsoft/usersecrets
+        read_only: true
+        bind:
+          create_host_path: true
+      - type: bind
+        source: C:\Users\Kapa\AppData\Roaming/Microsoft/UserSecrets
+        target: /home/app/.microsoft/usersecrets
+        read_only: true
+        bind:
+          create_host_path: true
+      - type: bind
+        source: C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Sdks\Microsoft.Docker.Sdk\tools\TokenService.Proxy\linux-x64\net6.0
+        target: /TokenService.Proxy
+        read_only: true
+        bind:
+          create_host_path: true
+      - type: bind
+        source: C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Sdks\Microsoft.Docker.Sdk\tools\HotReloadProxy\linux-x64\net6.0
+        target: /HotReloadProxy
+        read_only: true
+        bind:
+          create_host_path: true
+      - type: bind
+        source: C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\HotReload
+        target: /HotReloadAgent
+        read_only: true
+        bind:
+          create_host_path: true
+networks:
+  apiapp:
+    name: dockercompose11994077740785788543_apiapp

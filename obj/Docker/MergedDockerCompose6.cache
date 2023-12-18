@@ -1,0 +1,43 @@
+name: dockercompose11994077740785788543
+services:
+  database:
+    container_name: dbAPi
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: password@12345#
+    image: mcr.microsoft.com/mssql/server:latest
+    networks:
+      apiapp: null
+    ports:
+      - mode: ingress
+        target: 1433
+        published: "8002"
+        protocol: tcp
+  integralservice146:
+    build:
+      context: C:\Users\Kapa\Desktop\Научная графика для МВС 1-46М_2\Лекции\Лекция 6\IntegralService146
+      dockerfile: IntegralService146/Dockerfile
+    container_name: api
+    depends_on:
+      database:
+        condition: service_started
+        required: true
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      DB_HOST: database
+      DB_NAME: QuestionDB
+      DB_SA_PASSWORD: password@12345#
+    image: integralservice146
+    networks:
+      apiapp: null
+    ports:
+      - mode: ingress
+        target: 80
+        protocol: tcp
+      - mode: ingress
+        target: 80
+        published: "5020"
+        protocol: tcp
+networks:
+  apiapp:
+    name: dockercompose11994077740785788543_apiapp
