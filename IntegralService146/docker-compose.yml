@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  ms-sql-server:
+    image: mcr.microsoft.com/mssql/server:latest
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "h25Sa1p35Ow"
+      MSSQL_PID: Express
+    ports: 
+      - "1433:1433"
+    
+  backend:
+    build: 
+      dockerfile: ../IntegralService146/Dockerfile
+    ports:
+      - "5020:80"

@@ -21,9 +21,20 @@ namespace IntegralService146
             builder.Services.AddSwaggerGen();
 
             builder.Services.AddTransient<ICalculatorService, CalculatorService>();
+            
+            var server = Environment.GetEnvironmentVariable("DB_HOST") ?? "localhost";
+            var port = Environment.GetEnvironmentVariable("DB_PORT") ?? "1433";
+            var user = Environment.GetEnvironmentVariable("DB_USER") ?? "SA";
+            var database = Environment.GetEnvironmentVariable("DB_NAME") ?? "QuestionsDB";
+            var dbPassword = Environment.GetEnvironmentVariable("DB_PASSWORD") ?? "h25Sa1p35Ow";
+
+            /*builder.Services.AddDbContext<QuestionContext>(options =>
+            options.UseSqlServer(builder.Configuration.GetConnectionString("DevConnection")));*/
 
             builder.Services.AddDbContext<QuestionContext>(options =>
-            options.UseSqlServer(builder.Configuration.GetConnectionString("DevConnection")));
+            options.UseSqlServer($"Server={server},{port};Initial Catalog={database};User ID ={user};Password={dbPassword};TrustServerCertificate=True;Trusted_Connection=True;MultipleActiveResultSets=True;"));
+
+            // "Server=(localdb)\\MSSQLLocalDB;Database=QuestionsDB;Trusted_Connection=True;MultipleActiveResultSets=True;TrustServerCertificate=True;"
 
             var app = builder.Build();
 
@@ -39,6 +50,8 @@ namespace IntegralService146
                 app.UseSwaggerUI();
 
             }
+
+            PrepDB.PrepQuestion(app);
 
             app.UseAuthorization();
 

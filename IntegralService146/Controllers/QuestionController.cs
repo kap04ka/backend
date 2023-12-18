@@ -20,7 +20,7 @@ namespace IntegralService146.Controllers
 
         // Post: api/question
         [HttpGet]
-        public async Task<ActionResult<Question>> GetQuestions(int questionCount)
+        public async Task<ActionResult<IEnumerable<Question>>> GetQuestions(int questionCount)
         {
             var randomNquestions = await (_context.Questions
                 .Select(x => new
